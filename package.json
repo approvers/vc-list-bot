@@ -1,0 +1,21 @@
+{
+  "name": "unios-discord-bot",
+  "version": "0.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "author": "unios103 <unios103@gmail.com>",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
+    "ffmpeg-static": "^4.2.2",
+    "node-opus": "^0.3.3",
+    "nodemon": "^2.0.4",
+    "opusscript": "^0.0.7",
+    "self-timer": "^1.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node main.js",
+    "test": "nodemon main.js"
+  }
+}
