@@ -13,13 +13,12 @@ const returnMentionContents = (guild) => {
   let everyMembers = guild.members.cache.size;
   let utterance =
     selectEmoji(emojis) + " ***限界リスト*** " + selectEmoji(emojis) + "\n";
-  let numberOfMember = 0,
-    numberOfMuteMember = 0;
+  let numberOfMember = guild.voiceStates.cache.size;
+  let numberOfMuteMember = 0;
   let isEmpty = true;
-  if (guild.voiceStates != undefined) {
+  if (numberOfMember != 0) {
     guild.voiceStates.cache.map((members) => {
-      numberOfMember++;
-      if (members.selfMute == false) numberOfMuteMember++;
+      if (members.selfMute == true) numberOfMuteMember++;
     });
     utterance += "```asciidoc\n= 現在の状況 =\n";
     utterance += numberOfAllMembers(everyMembers) + "\n";
