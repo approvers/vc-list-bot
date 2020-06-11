@@ -11,24 +11,33 @@ exports.vsMembers = (message) => {
 const returnMentionContents = (guild) => {
   let emojis = guild.emojis.cache;
   let everyMembers = guild.memberCount;
+  let membersStatus = countMembers(guild);
+  let numberOfMember = membersStatus.numberOfMember;
+  let numberOfMuteMember = membersStatus.numberOfMuteMember;
+
   let utterance =
     selectEmoji(emojis) + " ***限界リスト*** " + selectEmoji(emojis) + "\n";
-  let numberOfMember = 0;
-  let numberOfMuteMember = 0;
-  guild.voiceStates.cache.map((members) => {
-    numberOfMember++;
-    if (members.selfMute == true) numberOfMuteMember++;
-  });
   utterance += "```asciidoc\n= 現在の状況 =\n";
   utterance += numberOfAllMembers(everyMembers) + "\n";
   utterance += numberOfMembers(numberOfMember) + "\n";
   utterance += numberOfMute(numberOfMuteMember) + "\n";
   utterance += callRate(everyMembers, numberOfMember) + "\n";
   utterance += muteRate(numberOfMuteMember, numberOfMember) + "```\n";
+
   if (numberOfMember == 0) {
     utterance = "し〜ん...";
   }
   return utterance;
+};
+
+const countMembers = (guild) => {
+  let numberOfMember = 0;
+  let numberOfMuteMember = 0;
+  guild.voiceStates.cache.map((members) => {
+    numberOfMember++;
+    if (members.selfMute == true) numberOfMuteMember++;
+  });
+  return { numberOfMember, numberOfMuteMember };
 };
 
 const numberOfAllMembers = (members) => {
