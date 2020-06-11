@@ -15,7 +15,6 @@ const returnMentionContents = (guild) => {
     selectEmoji(emojis) + " ***限界リスト*** " + selectEmoji(emojis) + "\n";
   let numberOfMember = 0;
   let numberOfMuteMember = 0;
-  console.log(guild.memberCount);
   guild.voiceStates.cache.map((members) => {
     numberOfMember++;
     if (members.selfMute == true) numberOfMuteMember++;
@@ -26,7 +25,7 @@ const returnMentionContents = (guild) => {
   utterance += numberOfMute(numberOfMuteMember) + "\n";
   utterance += callRate(everyMembers, numberOfMember) + "\n";
   utterance += muteRate(numberOfMuteMember, numberOfMember) + "```\n";
-  if (numberOfMember != 0) {
+  if (numberOfMember == 0) {
     utterance = "し〜ん...";
   }
   return utterance;
