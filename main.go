@@ -9,7 +9,7 @@ import(
 	"github.com/joho/godotenv"
 	"github.com/bwmarrin/discordgo"
 
-	"./command"
+	command "vcListBot/command"
 )
 
 func main() {
