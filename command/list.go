@@ -1,7 +1,7 @@
 package command
 
 import(
-	// "fmt"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 )
 
