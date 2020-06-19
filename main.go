@@ -1,13 +1,13 @@
 package main
 
-import(
+import (
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/joho/godotenv"
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 
 	command "vcListBot/command"
 )
