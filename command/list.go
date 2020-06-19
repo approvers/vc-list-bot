@@ -20,7 +20,7 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 	channel, guild, err := assets.GetGuildData(session, message)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("error getting channel or guild,", err)
 		return
 	}
 	memberCount := guild.MemberCount
