@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -19,6 +20,7 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 	channel, guild, err := assets.GetGuildData(session, message)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	memberCount := guild.MemberCount
