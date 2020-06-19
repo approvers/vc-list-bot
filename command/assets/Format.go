@@ -7,16 +7,13 @@ import (
 )
 
 func PaddingRight(val string, length int, text string) string {
-	for i := utf8.RuneCountInString(val); i < length; i++ {
+	for ; utf8.RuneCountInString(val + text) <= length; {
 		val += text
 	}
-	return val
+	t := []rune(text)
+	return val + string(t[0:length - utf8.RuneCountInString(val)])
 }
 
-func FormatRateNum(rate float64) float64 {
-	return math.Round(rate*1000) / 10
-}
-
-func FloatToString(number float64) string {
-	return strconv.FormatFloat(number, 'g', 4, 64)
+func FormatRateNum(rate float64) string {
+	return strconv.FormatFloat(math.Round(rate*1000) / 10, 'g', 4, 64)
 }

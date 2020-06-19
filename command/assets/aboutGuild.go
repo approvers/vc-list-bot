@@ -4,8 +4,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func GetGuildData(session *discordgo.Session, message *discordgo.MessageCreate) (channel *discordgo.Channel, guild *discordgo.Guild) {
-	channel, err := session.Channel(message.ChannelID)
+func GetGuildData(session *discordgo.Session, message *discordgo.MessageCreate) (channel *discordgo.Channel, guild *discordgo.Guild, err error) {
+	channel, err = session.Channel(message.ChannelID)
 	if err != nil {
 		return
 	}
@@ -13,5 +13,5 @@ func GetGuildData(session *discordgo.Session, message *discordgo.MessageCreate) 
 	if err != nil {
 		return
 	}
-	return channel, guild
+	return
 }
