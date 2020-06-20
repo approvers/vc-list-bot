@@ -15,11 +15,12 @@ import (
 func main() {
 	err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
 	if err != nil {
-		fmt.Println("please set ENV: DISCORD_BOT_TOKEN")
-		fmt.Println(err)
+		fmt.Println("error loading .env file,", err)
 	}
-
 	token := os.Getenv("DISCORD_BOT_TOKEN")
+	if token == "" {
+		fmt.Println("please set ENV: DISCORD_BOT_TOKEN")
+	}
 	discord, err := discordgo.New("Bot " + token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
