@@ -26,8 +26,12 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	memberCount := guild.MemberCount
 	voiceJoinNumber, voiceMuteNumber := GetVoiceStates(channel, guild)
 	utterance := " ***限界リスト*** \n```asciidoc\n= 現在の状況 =\n"
-	utterance += AllMember(memberCount) + InVoiceMembers(voiceJoinNumber) + MuteMembers(voiceMuteNumber)
-	utterance += VoiceMemberRate(memberCount, voiceJoinNumber) + MuteRate(voiceJoinNumber, voiceMuteNumber)
+	utterance += AllMember(memberCount) + InVoiceMembers(voiceJoinNumber)
+	if voiceJoinNumber != 0 {
+		utterance += MuteMembers(voiceMuteNumber) + VoiceMemberRate(memberCount, voiceJoinNumber) + MuteRate(voiceJoinNumber, voiceMuteNumber)
+	} else {
+		utterance = "今は誰もいないよ :pleading_face: \n" + utterance
+	}
 	utterance += "```"
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
