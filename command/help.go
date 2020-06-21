@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	assets "vcListBot/command/assets"
+	"vcListBot/command/assets"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -25,11 +25,13 @@ func Help(session *discordgo.Session, message *discordgo.MessageCreate) {
 	data, err := ioutil.ReadFile("./command/assets/help.json")
 	if err != nil {
 		fmt.Println("error loading file,", err)
+		return
 	}
 	var helpData []HelpData
 	err = json.Unmarshal(data, &helpData)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	helpList := ReturnCommandList(helpData)
 	session.ChannelMessageSend(message.ChannelID, helpList)

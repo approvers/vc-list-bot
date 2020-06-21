@@ -6,7 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	assets "vcListBot/command/assets"
+	"vcListBot/command/assets"
 )
 
 const textLength = 8
@@ -29,7 +29,9 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	utterance += "```asciidoc\n= 現在の状況 =\n"
 	utterance += AllMember(memberCount) + InVoiceMembers(voiceJoinNumber)
 	if voiceJoinNumber != 0 {
-		utterance += MuteMembers(voiceMuteNumber) + VoiceMemberRate(memberCount, voiceJoinNumber) + MuteRate(voiceJoinNumber, voiceMuteNumber)
+		utterance += MuteMembers(voiceMuteNumber)
+		utterance += VoiceMemberRate(memberCount, voiceJoinNumber)
+		utterance += MuteRate(voiceJoinNumber, voiceMuteNumber)
 	} else {
 		utterance = "今は誰もいないよ :pleading_face::sweat_drops: \n" + utterance
 	}
