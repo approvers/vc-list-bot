@@ -1,11 +1,6 @@
 # Discord Bot
 
-- プレフィックスは `!` です。
+VC の参加人数やミュート率などの状況をまとめます。
+(The bot summarizes the status of VC participation and mute rates.)
 
-- `!help` コマンドでコマンドリストが DM に送信されます。
-
----
-
-- The prefix is `!`
-
-- The `!help` command sends the command list to DM.
+- プレフィックスは `!` です。(The prefix is `!`)
