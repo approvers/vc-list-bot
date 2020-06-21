@@ -8,7 +8,7 @@ import (
 )
 
 func RandomSelectEmoji(emojis []*discordgo.Emoji) string {
-	if len(emojis) < 1 {
+	if len(emojis) == 0 {
 		return ""
 	}
 	rand.Seed(time.Now().UnixNano())

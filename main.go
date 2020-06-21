@@ -20,6 +20,7 @@ func main() {
 	token := os.Getenv("DISCORD_BOT_TOKEN")
 	if token == "" {
 		fmt.Println("please set ENV: DISCORD_BOT_TOKEN")
+		return
 	}
 	discord, err := discordgo.New("Bot " + token)
 	if err != nil {
@@ -27,8 +28,7 @@ func main() {
 		return
 	}
 
-	discord.AddHandler(command.List)
-	discord.AddHandler(command.Help)
+	discord.AddHandler(Apportion)
 	err = discord.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
@@ -40,4 +40,17 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 	discord.Close()
+}
+
+func Apportion(session *discordgo.Session, message *discordgo.MessageCreate) {
+	if message.Author.ID == session.State.User.ID {
+		return
+	}
+	if message.Content == "!help" {
+		command.Help(session, message)
+	}
+	if message.Content == "!list" {
+		command.List(session, message)
+	}
+	return
 }
