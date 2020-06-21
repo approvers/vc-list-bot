@@ -25,9 +25,13 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 	memberCount := guild.MemberCount
 	voiceJoinNumber, voiceMuteNumber := GetVoiceStates(guild)
-	utterance := assets.RandomSelectEmoji(guild.Emojis) + " ***限界リスト***" + assets.RandomSelectEmoji(guild.Emojis)
+
+	utterance := assets.RandomSelectEmoji(guild.Emojis)
+	utterance += " ***限界リスト***"
+	utterance += assets.RandomSelectEmoji(guild.Emojis)
 	utterance += "```asciidoc\n= 現在の状況 =\n"
-	utterance += AllMember(memberCount) + InVoiceMembers(voiceJoinNumber)
+	utterance += AllMember(memberCount)
+	utterance += InVoiceMembers(voiceJoinNumber)
 	if voiceJoinNumber != 0 {
 		utterance += MuteMembers(voiceMuteNumber)
 		utterance += VoiceMemberRate(memberCount, voiceJoinNumber)
@@ -36,6 +40,7 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 		utterance = "今は誰もいないよ :pleading_face::sweat_drops: \n" + utterance
 	}
 	utterance += "```"
+
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
 
