@@ -18,13 +18,13 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	if message.Content != "!list" {
 		return
 	}
-	channel, guild, err := assets.GetGuildData(session, message)
+	_, guild, err := assets.GetGuildData(session, message)
 	if err != nil {
 		fmt.Println("error getting channel or guild,", err)
 		return
 	}
 	memberCount := guild.MemberCount
-	voiceJoinNumber, voiceMuteNumber := GetVoiceStates(channel, guild)
+	voiceJoinNumber, voiceMuteNumber := GetVoiceStates(guild)
 	utterance := assets.RandomSelectEmoji(guild.Emojis) + " ***限界リスト***" + assets.RandomSelectEmoji(guild.Emojis)
 	utterance += "```asciidoc\n= 現在の状況 =\n"
 	utterance += AllMember(memberCount) + InVoiceMembers(voiceJoinNumber)
@@ -37,7 +37,7 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
 
-func GetVoiceStates(channel *discordgo.Channel, guild *discordgo.Guild) (voiceJoinNumber int, voiceMuteNumber int) {
+func GetVoiceStates(guild *discordgo.Guild) (voiceJoinNumber int, voiceMuteNumber int) {
 	voiceJoinNumber = len(guild.VoiceStates)
 	for _, vs := range guild.VoiceStates {
 		if vs.SelfMute {

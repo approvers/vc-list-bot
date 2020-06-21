@@ -28,6 +28,7 @@ func main() {
 	}
 
 	discord.AddHandler(command.List)
+	discord.AddHandler(command.Help)
 	err = discord.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
