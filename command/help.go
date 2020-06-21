@@ -16,12 +16,6 @@ type HelpData struct {
 }
 
 func Help(session *discordgo.Session, message *discordgo.MessageCreate) {
-	if message.Author.ID == session.State.User.ID {
-		return
-	}
-	if message.Content != "!help" {
-		return
-	}
 	data, err := ioutil.ReadFile("./command/assets/help.json")
 	if err != nil {
 		fmt.Println("error loading file,", err)

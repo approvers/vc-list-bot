@@ -12,12 +12,6 @@ import (
 const textLength = 8
 
 func List(session *discordgo.Session, message *discordgo.MessageCreate) {
-	if message.Author.ID == session.State.User.ID {
-		return
-	}
-	if message.Content != "!list" {
-		return
-	}
 	_, guild, err := assets.GetGuildData(session, message)
 	if err != nil {
 		fmt.Println("error getting channel or guild,", err)

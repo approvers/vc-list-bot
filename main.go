@@ -48,9 +48,11 @@ func Apportion(session *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 	if message.Content == "!help" {
 		command.Help(session, message)
+		return
 	}
 	if message.Content == "!list" {
 		command.List(session, message)
+		return
 	}
 	return
 }
