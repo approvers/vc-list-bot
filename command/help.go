@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"vcListBot/command/assets"
 
@@ -21,12 +22,12 @@ func init(){
 	data, err := ioutil.ReadFile("./command/assets/help.json")
 	if err != nil {
 		fmt.Println("error loading file,", err)
-		return
+		os.Exit(1)
 	}
 	err = json.Unmarshal(data, &helpData)
 	if err != nil {
 		fmt.Println(err)
-		return
+		os.Exit(1)
 	}
 }
 
