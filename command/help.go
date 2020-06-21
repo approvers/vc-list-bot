@@ -15,18 +15,22 @@ type HelpData struct {
 	Explanation string `json:"explanation"`
 }
 
-func Help(session *discordgo.Session, message *discordgo.MessageCreate) {
+var helpData []HelpData
+
+func init(){
 	data, err := ioutil.ReadFile("./command/assets/help.json")
 	if err != nil {
 		fmt.Println("error loading file,", err)
 		return
 	}
-	var helpData []HelpData
 	err = json.Unmarshal(data, &helpData)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+}
+
+func Help(session *discordgo.Session, message *discordgo.MessageCreate) {
 	helpList := ReturnCommandList(helpData)
 	session.ChannelMessageSend(message.ChannelID, helpList)
 }

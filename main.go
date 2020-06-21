@@ -43,9 +43,6 @@ func main() {
 }
 
 func Apportion(session *discordgo.Session, message *discordgo.MessageCreate) {
-	if message.Author.ID == session.State.User.ID {
-		return
-	}
 	if message.Author.Bot {
 		return
 	}
