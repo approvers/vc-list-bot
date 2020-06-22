@@ -18,14 +18,15 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 		return
 	}
 	memberCount := guild.MemberCount
-	voiceJoinNumber, voiceMuteNumber := GetVoiceStates(guild)
+	voiceJoinNumber := len(guild.VoiceStates)
+	voiceBotNumber, voiceMuteNumber := GetVoiceStates(guild, session)
 
 	utterance := assets.RandomSelectEmoji(guild.Emojis)
 	utterance += " ***限界リスト***"
 	utterance += assets.RandomSelectEmoji(guild.Emojis)
 	utterance += "```asciidoc\n= 現在の状況 =\n"
 	utterance += AllMember(memberCount)
-	utterance += InVoiceMembers(voiceJoinNumber)
+	utterance += InVoiceMembers(voiceJoinNumber, voiceBotNumber)
 	if voiceJoinNumber != 0 {
 		utterance += MuteMembers(voiceMuteNumber)
 		utterance += VoiceMemberRate(memberCount, voiceJoinNumber)
@@ -38,9 +39,15 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
 
-func GetVoiceStates(guild *discordgo.Guild) (voiceJoinNumber int, voiceMuteNumber int) {
-	voiceJoinNumber = len(guild.VoiceStates)
+func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) (voiceBotNumber int, voiceMuteNumber int) {
 	for _, vs := range guild.VoiceStates {
+		user,err := session.User(vs.UserID)
+		if err != nil {
+			return
+		}
+		if user.Bot {
+			voiceBotNumber ++
+		}
 		if vs.SelfMute {
 			voiceMuteNumber++
 		}
@@ -52,8 +59,8 @@ func AllMember(members int) string {
 	return assets.PaddingRight("鯖人数", textLength, "　") + ":: " + strconv.Itoa(members) + " 人\n"
 }
 
-func InVoiceMembers(members int) string {
-	return assets.PaddingRight("通話人数", textLength, "　") + ":: " + strconv.Itoa(members) + " 人\n"
+func InVoiceMembers(members int, bot int) string {
+	return assets.PaddingRight("通話人数", textLength, "　") + ":: " + strconv.Itoa(members) + " 人（bot " + strconv.Itoa(bot) + "人）\n"
 }
 
 func MuteMembers(members int) string {
