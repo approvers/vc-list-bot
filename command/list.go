@@ -1,7 +1,6 @@
 package command
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -9,27 +8,39 @@ import (
 	"vcListBot/command/assets"
 )
 
+type VoiceStates struct {
+	voiceBotNumber  int
+	voiceMuteNumber int
+}
+
 const textLength = 8
 
 func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	_, guild, err := assets.GetGuildData(session, message)
 	if err != nil {
-		fmt.Println("error getting channel or guild,", err)
+		errMessage := "**ERR: **getting channel or guild```" + err.Error() + "```"
+		session.ChannelMessageSend(message.ChannelID, errMessage)
 		return
 	}
 	memberCount := guild.MemberCount
-	voiceJoinNumber, voiceMuteNumber := GetVoiceStates(guild)
+	voiceJoinNumber := len(guild.VoiceStates)
+	states, err := GetVoiceStates(guild, session)
+	if err != nil {
+		errMessage := "**ERR: **getting the user details```" + err.Error() + "```"
+		session.ChannelMessageSend(message.ChannelID, errMessage)
+		return
+	}
 
 	utterance := assets.RandomSelectEmoji(guild.Emojis)
 	utterance += " ***限界リスト***"
 	utterance += assets.RandomSelectEmoji(guild.Emojis)
 	utterance += "```asciidoc\n= 現在の状況 =\n"
 	utterance += AllMember(memberCount)
-	utterance += InVoiceMembers(voiceJoinNumber)
+	utterance += InVoiceMembers(voiceJoinNumber, states.voiceBotNumber)
 	if voiceJoinNumber != 0 {
-		utterance += MuteMembers(voiceMuteNumber)
+		utterance += MuteMembers(states.voiceMuteNumber)
 		utterance += VoiceMemberRate(memberCount, voiceJoinNumber)
-		utterance += MuteRate(voiceJoinNumber, voiceMuteNumber)
+		utterance += MuteRate(voiceJoinNumber, states.voiceMuteNumber)
 	} else {
 		utterance = "今は誰もいないよ :pleading_face::sweat_drops: \n" + utterance
 	}
@@ -38,11 +49,18 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
 
-func GetVoiceStates(guild *discordgo.Guild) (voiceJoinNumber int, voiceMuteNumber int) {
-	voiceJoinNumber = len(guild.VoiceStates)
+func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) (states VoiceStates, err error) {
+	var user *discordgo.User
 	for _, vs := range guild.VoiceStates {
+		user, err = session.User(vs.UserID)
+		if err != nil {
+			return
+		}
+		if user.Bot {
+			states.voiceBotNumber++
+		}
 		if vs.SelfMute {
-			voiceMuteNumber++
+			states.voiceMuteNumber++
 		}
 	}
 	return
@@ -52,8 +70,8 @@ func AllMember(members int) string {
 	return assets.PaddingRight("鯖人数", textLength, "　") + ":: " + strconv.Itoa(members) + " 人\n"
 }
 
-func InVoiceMembers(members int) string {
-	return assets.PaddingRight("通話人数", textLength, "　") + ":: " + strconv.Itoa(members) + " 人\n"
+func InVoiceMembers(members int, bot int) string {
+	return assets.PaddingRight("通話人数", textLength, "　") + ":: " + strconv.Itoa(members) + " 人（bot " + strconv.Itoa(bot) + "人）\n"
 }
 
 func MuteMembers(members int) string {

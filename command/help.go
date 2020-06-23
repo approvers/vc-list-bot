@@ -18,7 +18,7 @@ type HelpData struct {
 
 var helpData []HelpData
 
-func init(){
+func init() {
 	data, err := ioutil.ReadFile("./command/assets/help.json")
 	if err != nil {
 		fmt.Println("error loading file,", err)
