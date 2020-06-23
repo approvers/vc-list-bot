@@ -8,8 +8,9 @@ import (
 	"vcListBot/command/assets"
 )
 
-type error interface {
-	Error() string
+type VoiceStates struct {
+	voiceBotNumber int
+	voiceMuteNumber int
 }
 
 const textLength = 8
@@ -23,7 +24,7 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 	memberCount := guild.MemberCount
 	voiceJoinNumber := len(guild.VoiceStates)
-	voiceBotNumber, voiceMuteNumber, err := GetVoiceStates(guild, session)
+	states, err := GetVoiceStates(guild, session)
 	if err != nil {
 		errMessage := "**ERR: **getting the user details```" + err.Error() + "```"
 		session.ChannelMessageSend(message.ChannelID, errMessage)
@@ -35,11 +36,11 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	utterance += assets.RandomSelectEmoji(guild.Emojis)
 	utterance += "```asciidoc\n= 現在の状況 =\n"
 	utterance += AllMember(memberCount)
-	utterance += InVoiceMembers(voiceJoinNumber, voiceBotNumber)
+	utterance += InVoiceMembers(voiceJoinNumber, states.voiceBotNumber)
 	if voiceJoinNumber != 0 {
-		utterance += MuteMembers(voiceMuteNumber)
+		utterance += MuteMembers(states.voiceMuteNumber)
 		utterance += VoiceMemberRate(memberCount, voiceJoinNumber)
-		utterance += MuteRate(voiceJoinNumber, voiceMuteNumber)
+		utterance += MuteRate(voiceJoinNumber, states.voiceMuteNumber)
 	} else {
 		utterance = "今は誰もいないよ :pleading_face::sweat_drops: \n" + utterance
 	}
@@ -48,7 +49,7 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
 
-func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) (voiceBotNumber int, voiceMuteNumber int, err error) {
+func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) ( states VoiceStates, err error) {
 	var user *discordgo.User
 	for _, vs := range guild.VoiceStates {
 		user, err = session.User(vs.UserID)
@@ -56,10 +57,10 @@ func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) (voiceBo
 			return
 		}
 		if user.Bot {
-			voiceBotNumber++
+			states.voiceBotNumber++
 		}
 		if vs.SelfMute {
-			voiceMuteNumber++
+			states.voiceMuteNumber++
 		}
 	}
 	return
