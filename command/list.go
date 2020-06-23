@@ -1,7 +1,6 @@
 package command
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -9,17 +8,27 @@ import (
 	"vcListBot/command/assets"
 )
 
+type error interface {
+	Error() string
+}
+
 const textLength = 8
 
 func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	_, guild, err := assets.GetGuildData(session, message)
 	if err != nil {
-		fmt.Println("error getting channel or guild,", err)
+		errMessage := "**ERR: **getting channel or guild```" + err.Error() + "```"
+		session.ChannelMessageSend(message.ChannelID, errMessage)
 		return
 	}
 	memberCount := guild.MemberCount
 	voiceJoinNumber := len(guild.VoiceStates)
-	voiceBotNumber, voiceMuteNumber := GetVoiceStates(guild, session)
+	voiceBotNumber, voiceMuteNumber, err := GetVoiceStates(guild, session)
+	if err != nil {
+		errMessage := "**ERR: **getting the user details```" + err.Error() + "```"
+		session.ChannelMessageSend(message.ChannelID, errMessage)
+		return
+	}
 
 	utterance := assets.RandomSelectEmoji(guild.Emojis)
 	utterance += " ***限界リスト***"
@@ -39,14 +48,15 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
 
-func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) (voiceBotNumber int, voiceMuteNumber int) {
+func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) (voiceBotNumber int, voiceMuteNumber int, err error) {
+	var user *discordgo.User
 	for _, vs := range guild.VoiceStates {
-		user,err := session.User(vs.UserID)
+		user, err = session.User(vs.UserID)
 		if err != nil {
 			return
 		}
 		if user.Bot {
-			voiceBotNumber ++
+			voiceBotNumber++
 		}
 		if vs.SelfMute {
 			voiceMuteNumber++
