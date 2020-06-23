@@ -9,7 +9,7 @@ import (
 )
 
 type VoiceStates struct {
-	voiceBotNumber int
+	voiceBotNumber  int
 	voiceMuteNumber int
 }
 
@@ -49,7 +49,7 @@ func List(session *discordgo.Session, message *discordgo.MessageCreate) {
 	session.ChannelMessageSend(message.ChannelID, utterance)
 }
 
-func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) ( states VoiceStates, err error) {
+func GetVoiceStates(guild *discordgo.Guild, session *discordgo.Session) (states VoiceStates, err error) {
 	var user *discordgo.User
 	for _, vs := range guild.VoiceStates {
 		user, err = session.User(vs.UserID)
