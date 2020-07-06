@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  IMAGE_NAME: members-db-rust
+  IMAGE_NAME: vcListBot
 
 jobs:
   push:
