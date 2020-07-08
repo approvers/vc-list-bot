@@ -10,7 +10,7 @@ on:
       - v*
 
 env:
-  IMAGE_NAME: vcListBot
+  IMAGE_NAME: vc-list-bot
 
 jobs:
   push:
