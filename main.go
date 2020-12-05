@@ -54,5 +54,9 @@ func Apportion(session *discordgo.Session, message *discordgo.MessageCreate) {
 		command.List(session, message)
 		return
 	}
+	if message.Content == "!member_num" {
+		command.Member(session, message)
+		return
+	}
 	return
 }
